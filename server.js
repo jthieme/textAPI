@@ -23,15 +23,15 @@ app.get('/', (req, res) => {
 });
 
 app.post('/add', async (req, res) => {
-    const loginBody = req.body;
-    const userName = loginBody.name;
-    const phone = loginBody.phone;
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
 
-    const redisPassword = phone === null ? null : await redisClient.hSet("verifiedUsers", userName, phone);
+    const redisPhone = phone === null ? null : await redisClient.hSet("verifiedUsers", userName, phone);
     
-    console.log(`password for ${userName}: ${redisPassword}`);
+    console.log(`password for ${userName}: ${redisPhone}`);
 
-    if (loginBody != null) {
+    if (body != null) {
         res.send(`Welcome, ${userName}!`);
     } else {
         res.status(401);
@@ -40,15 +40,15 @@ app.post('/add', async (req, res) => {
 });
 
 app.post('/get', async (req, res) => {
-    const loginBody = req.body;
-    const userName = loginBody.name;
-    const phone = loginBody.phone;
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
 
-    const redisPassword = phone === null ? null : await redisClient.hGet("verifiedUsers", userName);
+    const redisPhone = phone === null ? null : await redisClient.hGet("verifiedUsers", userName);
     
-    console.log(`password for ${userName}: ${redisPassword}`);
+    console.log(`password for ${userName}: ${redisPhone}`);
 
-    if (loginBody != null) {
+    if (body != null) {
         res.send(`Welcome, ${userName}!`);
     } else {
         res.status(401);
@@ -57,15 +57,15 @@ app.post('/get', async (req, res) => {
 });
 
 app.post('/remove', async (req, res) => {
-    const loginBody = req.body;
-    const userName = loginBody.name;
-    const phone = loginBody.phone;
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
 
-    const redisPassword = phone === null ? null : await redisClient.hDel("verifiedUsers", userName);
+    const redisPhone = phone === null ? null : await redisClient.hDel("verifiedUsers", userName);
     
-    console.log(`password for ${userName}: ${redisPassword}`);
+    console.log(`password for ${userName}: ${redisPhone}`);
 
-    if (loginBody != null) {
+    if (body != null) {
         res.send(`${userName} has been removed!`);
     } else {
         res.status(401);
@@ -74,15 +74,15 @@ app.post('/remove', async (req, res) => {
 });
 
 app.post('/addWardMember', async (req, res) => {
-    const loginBody = req.body;
-    const userName = loginBody.name;
-    const phone = loginBody.phone;
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
 
-    const redisPassword = phone === null ? null : await redisClient.hSet("wardList", userName, phone);
+    const redisPhone = phone === null ? null : await redisClient.hSet("wardList", userName, phone);
     
-    console.log(`password for ${userName}: ${redisPassword}`);
+    console.log(`password for ${userName}: ${redisPhone}`);
 
-    if (loginBody != null) {
+    if (body != null) {
         res.send(`${userName} has been added!`);
     } else {
         res.status(401);
@@ -91,15 +91,15 @@ app.post('/addWardMember', async (req, res) => {
 });
 
 app.post('/removeWardMember', async (req, res) => {
-    const loginBody = req.body;
-    const userName = loginBody.name;
-    const phone = loginBody.phone;
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
 
-    const redisPassword = phone === null ? null : await redisClient.hDel("wardList", userName);
+    const redisPhone = phone === null ? null : await redisClient.hDel("wardList", userName);
     
-    console.log(`password for ${userName}: ${redisPassword}`);
+    console.log(`password for ${userName}: ${redisPhone}`);
 
-    if (loginBody != null) {
+    if (body != null) {
         res.send(`Ward Member ${userName} has been removed!`);
     } else {
         res.status(401);
