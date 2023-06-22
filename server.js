@@ -24,15 +24,83 @@ app.get('/', (req, res) => {
 
 app.post('/add', async (req, res) => {
     const loginBody = req.body;
-    const userName = loginBody.userName;
-    const password = loginBody.password;
+    const userName = loginBody.name;
+    const phone = loginBody.phone;
 
-    const redisPassword = password === null ? null : await redisClient.hGet("verifiedUsers", userName);
+    const redisPassword = phone === null ? null : await redisClient.hSet("verifiedUsers", userName, phone);
     
     console.log(`password for ${userName}: ${redisPassword}`);
 
-    if (loginBody != "") {
+    if (loginBody != null) {
         res.send(`Welcome, ${userName}!`);
+    } else {
+        res.status(401);
+        res.send("Empty message.");
+    }
+});
+
+app.post('/get', async (req, res) => {
+    const loginBody = req.body;
+    const userName = loginBody.name;
+    const phone = loginBody.phone;
+
+    const redisPassword = phone === null ? null : await redisClient.hGet("verifiedUsers", userName);
+    
+    console.log(`password for ${userName}: ${redisPassword}`);
+
+    if (loginBody != null) {
+        res.send(`Welcome, ${userName}!`);
+    } else {
+        res.status(401);
+        res.send("Empty message.");
+    }
+});
+
+app.post('/remove', async (req, res) => {
+    const loginBody = req.body;
+    const userName = loginBody.name;
+    const phone = loginBody.phone;
+
+    const redisPassword = phone === null ? null : await redisClient.hDel("verifiedUsers", userName);
+    
+    console.log(`password for ${userName}: ${redisPassword}`);
+
+    if (loginBody != null) {
+        res.send(`${userName} has been removed!`);
+    } else {
+        res.status(401);
+        res.send("Empty message.");
+    }
+});
+
+app.post('/addWardMember', async (req, res) => {
+    const loginBody = req.body;
+    const userName = loginBody.name;
+    const phone = loginBody.phone;
+
+    const redisPassword = phone === null ? null : await redisClient.hSet("wardList", userName, phone);
+    
+    console.log(`password for ${userName}: ${redisPassword}`);
+
+    if (loginBody != null) {
+        res.send(`${userName} has been added!`);
+    } else {
+        res.status(401);
+        res.send("Empty message.");
+    }
+});
+
+app.post('/removeWardMember', async (req, res) => {
+    const loginBody = req.body;
+    const userName = loginBody.name;
+    const phone = loginBody.phone;
+
+    const redisPassword = phone === null ? null : await redisClient.hDel("wardList", userName);
+    
+    console.log(`password for ${userName}: ${redisPassword}`);
+
+    if (loginBody != null) {
+        res.send(`Ward Member ${userName} has been removed!`);
     } else {
         res.status(401);
         res.send("Empty message.");
