@@ -22,54 +22,66 @@ app.get('/', (req, res) => {
     res.send("Node Server is here");
 });
 
-app.post('/add', async (req, res) => {
-    const body = req.body;
-    const userName = body.name;
-    const phone = body.phone;
+/***********************************
+ * ALL OF THE GETS
+***********************************/
 
-    const redisPhone = phone === null ? null : await redisClient.hSet("verifiedUsers", userName, phone);
-    
-    console.log(`password for ${userName}: ${redisPhone}`);
+app.get('/getWard', async (req, res) => {
+    const phoneNumbers = await redisClient.hVals("wardList");
 
-    if (body != null) {
-        res.send(`Welcome, ${userName}!`);
+    if (phoneNumbers != null) {
+        res.status(200);
+        res.send(`${JSON.stringify(phoneNumbers)}`);
     } else {
         res.status(401);
-        res.send("Empty message.");
+        res.send("Empty phone list");
     }
 });
 
-app.post('/get', async (req, res) => {
-    const body = req.body;
-    const userName = body.name;
-    const phone = body.phone;
+app.get('/getEQ', async (req, res) => {
+    const phoneNumbers = await redisClient.hVals("eqList");
 
-    const redisPhone = phone === null ? null : await redisClient.hGet("verifiedUsers", userName);
-    
-    console.log(`password for ${userName}: ${redisPhone}`);
-
-    if (body != null) {
-        res.send(`Welcome, ${userName}!`);
+    if (phoneNumbers != null) {
+        res.status(200);
+        res.send(`${JSON.stringify(phoneNumbers)}`);
     } else {
-        res.status(401);
-        res.send("Empty message.");
+        res.status(400);
+        res.send("Empty phone list");
     }
 });
 
-app.post('/remove', async (req, res) => {
+app.get('/getRS', async (req, res) => {
+    const phoneNumbers = await redisClient.hVals("rsList");
+
+    if (phoneNumbers != null) {
+        res.status(200);
+        res.send(`${JSON.stringify(phoneNumbers)}`);
+    } else {
+        res.status(400);
+        res.send("Empty phone list");
+    }
+});
+
+/***********************************
+ * ALL OF THE ADDS
+***********************************/
+
+app.post('/addUser', async (req, res) => {
     const body = req.body;
     const userName = body.name;
     const phone = body.phone;
 
-    const redisPhone = phone === null ? null : await redisClient.hDel("verifiedUsers", userName);
-    
-    console.log(`password for ${userName}: ${redisPhone}`);
+    const verifiedUsers = "verifiedUsers";
 
-    if (body != null) {
-        res.send(`${userName} has been removed!`);
+    const userExists = await redisClient.hExists(verifiedUsers, userName);
+        
+    if (!userExists) {
+        await redisClient.hSet(verifiedUsers, userName, phone);
+        res.status(200);
+        res.send(`Verified User ${userName} has been added!`);
     } else {
-        res.status(401);
-        res.send("Empty message.");
+        res.status(400);
+        res.send(`ERROR: ${userName} with phone number ${phone} is already a Verified User.`);
     }
 });
 
@@ -78,15 +90,78 @@ app.post('/addWardMember', async (req, res) => {
     const userName = body.name;
     const phone = body.phone;
 
-    const redisPhone = phone === null ? null : await redisClient.hSet("wardList", userName, phone);
-    
-    console.log(`password for ${userName}: ${redisPhone}`);
+    const wardList = "wardList";
 
-    if (body != null) {
-        res.send(`${userName} has been added!`);
+    const userExists = await redisClient.hExists(wardList, userName);
+        
+    if (!userExists) {
+        await redisClient.hSet(wardList, userName, phone);
+        res.status(200);
+        res.send(`EQ Member ${userName} has been added!`);
     } else {
-        res.status(401);
-        res.send("Empty message.");
+        res.status(400);
+        res.send(`ERROR: ${userName} with phone number ${phone} is already in the database.`);
+    }
+});
+
+app.post('/addEQMember', async (req, res) => {
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
+
+    const eqList = "eqList";
+
+    const userExists = await redisClient.hExists(eqList, userName);
+        
+    if (!userExists) {
+        await redisClient.hSet(eqList, userName, phone);
+        res.status(200);
+        res.send(`EQ Member ${userName} has been added!`);
+    } else {
+        res.status(400);
+        res.send(`ERROR: ${userName} with phone number ${phone} is already in the database.`);
+    }
+});
+
+app.post('/addRSMember', async (req, res) => {
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
+
+    const rsList = "rsList";
+
+    const userExists = await redisClient.hExists(rsList, userName);
+        
+    if (!userExists) {
+        await redisClient.hSet(rsList, userName, phone);
+        res.status(200);
+        res.send(`RS Member ${userName} has been added!`);
+    } else {
+        res.status(400);
+        res.send(`ERROR: ${userName} with phone number ${phone} is already in the database.`);
+    }
+});
+
+/***********************************
+ * ALL OF THE REMOVES
+***********************************/
+
+app.post('/removeUser', async (req, res) => {
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
+
+    const verifiedUsers = "verifiedUsers";
+
+    const userExists = await redisClient.hExists(verifiedUsers, userName);
+        
+    if (userExists) {
+        await redisClient.hDel(verifiedUsers, userName);
+        res.status(200);
+        res.send(`Verified User ${userName} has been removed!`);
+    } else {
+        res.status(400);
+        res.send(`ERROR: ${userName} with phone number ${phone} is not a Verified User.`);
     }
 });
 
@@ -95,14 +170,54 @@ app.post('/removeWardMember', async (req, res) => {
     const userName = body.name;
     const phone = body.phone;
 
-    const redisPhone = phone === null ? null : await redisClient.hDel("wardList", userName);
-    
-    console.log(`password for ${userName}: ${redisPhone}`);
+    const wardList = "wardList";
 
-    if (body != null) {
-        res.send(`Ward Member ${userName} has been removed!`);
+    const userExists = await redisClient.hExists(wardList, userName);
+        
+    if (userExists) {
+        await redisClient.hDel(wardList, userName);
+        res.status(200);
+        res.send(`EQ Member ${userName} has been removed!`);
     } else {
-        res.status(401);
-        res.send("Empty message.");
+        res.status(400);
+        res.send(`ERROR: ${userName} with phone number ${phone} is not in the database.`);
+    }
+});
+
+app.post('/removeEQMember', async (req, res) => {
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
+
+    const eqList = "eqList";
+
+    const userExists = await redisClient.hExists(eqList, userName);
+        
+    if (userExists) {
+        await redisClient.hDel(eqList, userName);
+        res.status(200);
+        res.send(`EQ Member ${userName} has been removed!`);
+    } else {
+        res.status(400);
+        res.send(`ERROR: ${userName} with phone number ${phone} is not in the database.`);
+    }
+});
+
+app.post('/removeRSMember', async (req, res) => {
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
+
+    const rsList = "rsList";
+
+    const userExists = await redisClient.hExists(rsList, userName);
+
+    if (userExists) {
+        await redisClient.hDel(rsList, userName);
+        res.status(200);
+        res.send(`RS Member ${userName} has been removed!`);
+    } else {
+        res.status(400);
+        res.send(`ERROR: ${userName} with phone number ${phone} is not in the database.`);
     }
 });

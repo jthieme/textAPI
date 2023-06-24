@@ -1,3 +1,5 @@
 /node_modules
 login.cmd
-login.json
+rs.json
+eq.json
+ward.json
