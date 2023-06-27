@@ -1,7 +1,6 @@
 {
   "scripts": {
-    "start": "fire",
-    "fire": "node server.js",
+    "start": "node server.js",
     "dev": "nodemon server"
   },
   "dependencies": {
