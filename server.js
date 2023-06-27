@@ -4,11 +4,11 @@ const Redis = require("redis");
 const app = express();
 const port = 3000;
 
-const redisClient = Redis.createClient({url:"redis://red-cicv0oh8g3n04m80a700:6379"});
 
 app.use(bodyParser.json());
 
 app.listen(port, async () => {
+    const redisClient = await Redis.createClient({url:"redis://red-cicv0oh8g3n04m80a700:6379"});
     const redisConnect = await redisClient.connect();
 
     redisConnect;
