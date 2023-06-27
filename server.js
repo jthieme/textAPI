@@ -5,7 +5,7 @@ const app = express();
 const port = 30260;
 
 // const redisClient = Redis.createClient({url:"redis://127.0.0.1:6379"});
-const redisClient = Redis.createClient({url:"redis://default:62b621ee499146d785273842cad2590f@usw2-on-cat-30260.upstash.io:30260"});
+const redisClient = Redis.createClient({url:"rediss://default:62b621ee499146d785273842cad2590f@usw2-on-cat-30260.upstash.io:30260"});
 const redisConnect = redisClient.connect();
 
 app.use(bodyParser.json());
