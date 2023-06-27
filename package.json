@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "install fire",
+    "start": "fire",
     "install": "npm install",
     "fire": "node server.js",
     "dev": "nodemon server"
