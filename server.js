@@ -8,7 +8,7 @@ const port = 3000;
 app.use(bodyParser.json());
 
 app.listen(port, async () => {
-    const redisClient = await Redis.createClient({url:"redis://red-cicv0oh8g3n04m80a700:6379"});
+    const redisClient = await Redis.createClient({url:"rediss://red-cicv0oh8g3n04m80a700:OIYrTLnsiO5QDbe8aTPCp98SmYUzb3ul@oregon-redis.render.com:6379"});
     const redisConnect = await redisClient.connect();
 
     redisConnect;
