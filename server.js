@@ -223,3 +223,66 @@ app.post('/removeRSMember', async (req, res) => {
         res.send(`ERROR: ${userName} with phone number ${phone} is not in the database.`);
     }
 });
+
+app.post('/addWardList', async (req, res) => {
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
+
+    const wardList = "wardList";
+
+    body.data.map((i) => {
+        redisClient.hSet(wardList, i.name, i.phone);
+    });
+
+    const list = await redisClient.hGetAll(wardList)
+    if (list) {
+        res.status(200);
+        res.send("Success");
+    } else {
+        res.status(400);
+        res.send("Failed");
+    }
+});
+
+app.post('/addEQList', async (req, res) => {
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
+
+    const eqList = "eqList";
+
+    body.data.map((i) => {
+        redisClient.hSet(eqList, i.name, i.phone);
+    });
+
+    const list = await redisClient.hGetAll(eqList)
+    if (list) {
+        res.status(200);
+        res.send("Success");
+    } else {
+        res.status(400);
+        res.send("Failed");
+    }
+});
+
+app.post('/addRSList', async (req, res) => {
+    const body = req.body;
+    const userName = body.name;
+    const phone = body.phone;
+
+    const rsList = "rsList";
+
+    body.data.map((i) => {
+        redisClient.hSet(rsList, i.name, i.phone);
+    });
+
+    const list = await redisClient.hGetAll(rsList)
+    if (list) {
+        res.status(200);
+        res.send("Success");
+    } else {
+        res.status(400);
+        res.send("Failed");
+    }
+});
