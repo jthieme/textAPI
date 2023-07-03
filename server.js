@@ -4,13 +4,12 @@ const Redis = require("redis");
 const app = express();
 const port = 30260;
 
-// const redisClient = Redis.createClient({url:"redis://127.0.0.1:6379"});
 const redisClient = Redis.createClient({url:"rediss://default:62b621ee499146d785273842cad2590f@usw2-on-cat-30260.upstash.io:30260"});
-const redisConnect = redisClient.connect();
 
 app.use(bodyParser.json());
 
 app.listen(port, async () => {
+    const redisConnect = redisClient.connect();
 
     redisConnect;
 
@@ -33,7 +32,7 @@ app.get('/getWard', async (req, res) => {
 
     if (phoneNumbers != null) {
         res.status(200);
-        res.send(`${JSON.stringify(phoneNumbers)}`);
+        res.send(`${phoneNumbers}`);
     } else {
         res.status(401);
         res.send("Empty phone list");
@@ -243,6 +242,9 @@ app.post('/addWardList', async (req, res) => {
         res.status(400);
         res.send("Failed");
     }
+
+    // const test = await redisClient.hGetAll(wardList);
+    // console.log(body.data.map((i) => redisClient.hSet(wardList, i.name, i.phone)));
 });
 
 app.post('/addEQList', async (req, res) => {
@@ -252,18 +254,20 @@ app.post('/addEQList', async (req, res) => {
 
     const eqList = "eqList";
 
-    body.data.map((i) => {
-        redisClient.hSet(eqList, i.name, i.phone);
-    });
+    // body.eq.map((i) => {
+    //     redisClient.hSet(eqList, i.name, i.phone);
+    // });
 
-    const list = await redisClient.hGetAll(eqList)
-    if (list) {
-        res.status(200);
-        res.send("Success");
-    } else {
-        res.status(400);
-        res.send("Failed");
-    }
+    // const list = await redisClient.hGetAll(eqList)
+    // if (list) {
+    //     res.status(200);
+    //     res.send("Success");
+    // } else {
+    //     res.status(400);
+    //     res.send("Failed");
+    // }
+
+    console.log(body.data.map((i) => redisClient.hSet(eqList, i.name, i.phone)));
 });
 
 app.post('/addRSList', async (req, res) => {
@@ -273,16 +277,18 @@ app.post('/addRSList', async (req, res) => {
 
     const rsList = "rsList";
 
-    body.data.map((i) => {
-        redisClient.hSet(rsList, i.name, i.phone);
-    });
+    // body.rs.map((i) => {
+    //     redisClient.hSet(rsList, i.name, i.phone);
+    // });
 
-    const list = await redisClient.hGetAll(rsList)
-    if (list) {
-        res.status(200);
-        res.send("Success");
-    } else {
-        res.status(400);
-        res.send("Failed");
-    }
+    // const list = await redisClient.hGetAll(rsList)
+    // if (list) {
+    //     res.status(200);
+    //     res.send("Success");
+    // } else {
+    //     res.status(400);
+    //     res.send("Failed");
+    // }
+
+    console.log(body.data.map((i) => redisClient.hSet(rsList, i.name, i.phone)));
 });
