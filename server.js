@@ -32,7 +32,7 @@ app.get('/getWard', async (req, res) => {
 
     if (phoneNumbers != null) {
         res.status(200);
-        res.send(`${phoneNumbers}`);
+        res.send(`${JSON.stringify(phoneNumbers)}`);
     } else {
         res.status(401);
         res.send("Empty phone list");
