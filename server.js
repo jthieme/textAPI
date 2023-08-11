@@ -52,7 +52,7 @@ app.post('/sendWard', async (req, res) => {
 
 app.post('/sendTest', async (req, res) => {
     const body = req.body;
-    const message = req.message;
+    const message = body.message;
     const accountSid = body.accountSid;
     const authToken = body.authToken;
     const twilioNumber = body.twilioNumber;
