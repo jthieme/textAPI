@@ -67,6 +67,7 @@ app.post('/sendTest', async (req, res) => {
                 from: twilioNumber,
                 to: number
             }).then(message => console.log(`Message sent to number: ${number} with message id: ${message.sid}`));
+            setTimeout(() => {console.log("1 second delay")}, 1000);
         });
         res.status(200);
         res.send("Text has been sent.");
