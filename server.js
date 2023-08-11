@@ -69,7 +69,7 @@ app.post('/sendTest', async (req, res) => {
             }).done()
         });
         res.status(200);
-        res.send(`${JSON.stringify(phoneNumbers)}`);
+        res.send("Text has been sent.");
     } else {
         res.status(401);
         res.send("Empty phone list");
