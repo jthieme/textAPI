@@ -60,7 +60,7 @@ app.post('/sendTest', async (req, res) => {
 
     const phoneNumbers = await redisClient.hVals("test");
 
-    if (null != phoneNumbers) {
+    if (phoneNumbers != null) {
         phoneNumbers.map((number) => {
             client.messages.create({
                 body: message,
