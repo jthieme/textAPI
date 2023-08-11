@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.listen(port, async () => {
     const redisConnect = redisClient.connect();
 
-    redisConnect;
+    await redisConnect;
 
     // ternary expression to log if we are connected or not
     redisConnect ? 
