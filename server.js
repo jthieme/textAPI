@@ -60,16 +60,13 @@ app.post('/sendTest', async (req, res) => {
 
     const phoneNumbers = await redisClient.hVals("test");
 
-    if (phoneNumbers != null) {
+    if (null != phoneNumbers) {
         phoneNumbers.map((number) => {
             client.messages.create({
                 body: message,
                 from: twilioNumber,
                 to: number
-            }).then(message => {
-                console.log(`Message sent to number: ${number} with message id: ${message.sid}`)
-                setTimeout(() => {console.log("1 second delay")}, 1000);
-            });
+            }).then(message => console.log(`Message sent to number: ${number} with message id: ${message.sid}`));
         });
         res.status(200);
         res.send("Text has been sent.");
