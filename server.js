@@ -24,6 +24,59 @@ app.get('/', (req, res) => {
 });
 
 /***********************************
+ * ALL OF THE SENDS
+***********************************/
+app.post('/sendWard', async (req, res) => {
+    const body = req.body;
+    const message = req.message;
+    const accountSid = body.accountSid;
+    const authToken = body.authToken;
+    const client = require("twilio")(accountSid, authToken)
+
+    const phoneNumbers = await redisClient.hVals("wardList");
+
+    if (phoneNumbers != null) {
+        phoneNumbers.map((number) => {
+            client.messages.create({
+                body: message,
+                from: ''
+            })
+        });
+        res.status(200);
+        res.send(`${JSON.stringify(phoneNumbers)}`);
+    } else {
+        res.status(401);
+        res.send("Empty phone list");
+    }
+});
+
+app.post('/sendTest', async (req, res) => {
+    const body = req.body;
+    const message = req.message;
+    const accountSid = body.accountSid;
+    const authToken = body.authToken;
+    const twilioNumber = body.twilioNumber;
+    const client = require("twilio")(accountSid, authToken)
+
+    const phoneNumbers = await redisClient.hVals("wardList");
+
+    if (phoneNumbers != null) {
+        phoneNumbers.map((number) => {
+            client.messages.create({
+                body: message,
+                from: twilioNumber,
+                to: number
+            }).done()
+        });
+        res.status(200);
+        res.send(`${JSON.stringify(phoneNumbers)}`);
+    } else {
+        res.status(401);
+        res.send("Empty phone list");
+    }
+});
+
+/***********************************
  * ALL OF THE GETS
 ***********************************/
 
