@@ -51,30 +51,42 @@ app.post('/sendWard', async (req, res) => {
 });
 
 app.post('/sendTest', async (req, res) => {
-    const body = req.body;
-    const message = body.message;
-    const accountSid = body.accountSid;
-    const authToken = body.authToken;
-    const twilioNumber = body.twilioNumber;
-    const client = require("twilio")(accountSid, authToken)
+    try {
+        const body = req.body;
+        const message = body.message;
+        const accountSid = body.accountSid;
+        const authToken = body.authToken;
+        const twilioNumber = body.twilioNumber;
+        const client = require("twilio")(accountSid, authToken);
 
-    const phoneNumbers = await redisClient.hVals("test");
+        const phoneNumbers = await redisClient.hVals("test");
 
-    if (phoneNumbers != null) {
-        phoneNumbers.map((number) => {
-            client.messages.create({
-                body: message,
-                from: twilioNumber,
-                to: number
-            }).then(message => console.log(`Message sent to number: ${number} with message id: ${message.sid}`));
-        });
-        res.status(200);
-        res.send("Text has been sent.");
-    } else {
-        res.status(401);
-        res.send("Empty phone list");
+        if (phoneNumbers != null) {
+            const promises = phoneNumbers.map(async (number) => {
+                try {
+                    const messageResult = await client.messages.create({
+                        body: message,
+                        from: twilioNumber,
+                        to: number
+                    });
+                    console.log(`Message sent to number: ${number} with message id: ${messageResult.sid}`);
+                } catch (error) {
+                    console.error(`Error sending message to number: ${number}`, error);
+                }
+            });
+
+            await Promise.all(promises);
+
+            res.status(200).send("Text has been sent.");
+        } else {
+            res.status(401).send("Empty phone list");
+        }
+    } catch (error) {
+        console.error("An error occurred:", error);
+        res.status(500).send("An error occurred while processing the request.");
     }
 });
+
 
 /***********************************
  * ALL OF THE GETS
