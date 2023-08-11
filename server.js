@@ -58,7 +58,7 @@ app.post('/sendTest', async (req, res) => {
     const twilioNumber = body.twilioNumber;
     const client = require("twilio")(accountSid, authToken)
 
-    const phoneNumbers = await redisClient.hVals("wardList");
+    const phoneNumbers = await redisClient.hVals("test");
 
     if (phoneNumbers != null) {
         phoneNumbers.map((number) => {
