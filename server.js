@@ -66,7 +66,7 @@ app.post('/sendTest', async (req, res) => {
                 body: message,
                 from: twilioNumber,
                 to: number
-            }).done()
+            });
         });
         res.status(200);
         res.send("Text has been sent.");
