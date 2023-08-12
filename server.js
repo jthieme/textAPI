@@ -64,12 +64,13 @@ app.post('/sendTest', async (req, res) => {
         if (phoneNumbers != null) {
             const promises = phoneNumbers.map(async (number) => {
                 try {
-                    const messageResult = await client.messages.create({
+                    await client.messages.create({
                         body: message,
                         from: twilioNumber,
                         to: number
-                    });
-                    console.log(`Message sent to number: ${number} with message id: ${messageResult.sid}`);
+                    })
+                    .then(message => console.log(`Message sent to number: ${number} with message id: ${message.sid}`))
+                    .done();
                 } catch (error) {
                     console.error(`Error sending message to number: ${number}`, error);
                 }
